@@ -1,0 +1,323 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 上海交通大学科幻奇幻协会刊物模板
+%% 作者：上海交通大学科幻奇幻协会
+%% GitHub：https://github.com/gpabooks/SJTUSFFA-Book-Template
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SJTUSFFABook.sty
+
+\ProvidesPackage{SJTUSFFABook}
+
+%%--------------------加载宏包--------------------%%
+\RequirePackage[UTF8,fontset=windows]{ctex}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsbsy}
+\RequirePackage{amsopn}
+\RequirePackage{amstext}
+\RequirePackage{amsthm}
+\RequirePackage{amsxtra}
+\RequirePackage{array}
+\RequirePackage{bm}
+\RequirePackage{calc}
+\RequirePackage{caption}
+\RequirePackage{ctex}
+\RequirePackage{enumerate}
+\RequirePackage{enumitem}
+\RequirePackage{eso-pic}
+\RequirePackage{etoolbox} % 环境定制工具
+\RequirePackage{fancyhdr}
+\RequirePackage{float}
+\RequirePackage{fontawesome5}
+\RequirePackage{fontspec}
+\RequirePackage{footmisc}
+\RequirePackage{geometry}
+\RequirePackage{graphicx}
+\RequirePackage{svg}
+\RequirePackage{ifpdf}
+\RequirePackage{ifthen}
+\RequirePackage{indentfirst} % 首段缩进
+\RequirePackage{tabularx}
+\RequirePackage{latexsym}
+\RequirePackage{multicol}
+\RequirePackage{multirow}
+\RequirePackage{setspace}
+%\RequirePackage{showframe} % 最后记得去掉
+\RequirePackage{svg}
+\RequirePackage{titlesec}
+\RequirePackage{titletoc}
+\RequirePackage{tocloft}
+\RequirePackage{xeCJK}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{rotating}
+\RequirePackage{zhlipsum}
+\RequirePackage[hyphens]{url}
+\RequirePackage[unicode=true,colorlinks,urlcolor=blue,linkcolor=blue,bookmarksnumbered=blue]{hyperref}
+
+
+%%--------------------页面布局--------------------%%
+%% 页面边距
+\geometry{
+  % 国标B5，
+  paperwidth=182mm, % 整张纸的宽度（横向尺寸）
+  paperheight=257mm, % 整张纸的高度（纵向尺寸）
+  inner=15mm, % 内侧（装订边）留白 16 mm
+  outer=15mm, % 外侧（翻口边）留白 16 mm
+  top=42mm, % 纸的上边缘到正文第一行基线的距离
+  bottom=21mm, % 纸的下边缘到正文最后一行基线的距离
+  headsep=26mm, % 页眉文字（不是数字）底部到正文顶部的距离
+  bindingoffset=7mm % 额外增加的“装订损耗”距离
+}
+
+%% 设置行距
+\setstretch{1.5}
+
+%% 设置两列之间的间距
+\setlength{\columnsep}{2em}
+
+%% 设置脚注线
+\setlength{\skip\footins}{1.2\baselineskip}
+
+%%--------------------字体设置--------------------%%
+%% 中文主字体（CJK）方正兰亭黑GBK
+\xeCJKsetup{PunctStyle=quanjiao} % 全角标点 或 PunctStyle=kaiming
+\setCJKmainfont{FZLTHK.ttf}[
+    Path = ./fonts/,
+    BoldFont = FZLTCHK.ttf
+]
+%% 英文主字体（Latin）方正兰亭黑GBK
+\setmainfont{FZLTHK.ttf}[
+    Path = ./fonts/,
+    BoldFont = FZLTCHK.ttf
+]
+
+\setCJKsansfont{SimHei} % 设置无衬线字体
+\setCJKmonofont{KaiTi} % 设置等宽字体
+
+%% 自定义英文字体命令 Times New Roman 引用环境使用
+\newfontfamily\timesnewroman{Times New Roman}
+
+%% 自定义中英文字体命令 Noto Serif SC 页眉使用
+\newfontfamily\notoserifcjkscbolden{NotoSerifCJKsc-Bold.otf}[
+    Path = ./fonts/,
+]
+\newCJKfontfamily\notoserifcjkscboldzh{NotoSerifCJKsc-Bold.otf}[
+    Path = ./fonts/
+]
+
+%% 自定义中英文字体 方正清刻本悦宋简R 版块起始页面用
+\newfontfamily\fzqkbysjren{FZQingKBYSJW-R.ttf}[
+    Path = ./fonts/
+]
+\newCJKfontfamily\fzqkbysjrzh{FZQingKBYSJW-R.ttf}[
+    Path = ./fonts/
+]
+
+%% 自定义中英文字体 方正小篆体 扉页使用
+\newCJKfontfamily\fzxztfw{FZXZTFW.ttf}[
+    Path = ./fonts/
+]
+
+% 列表圆点
+\setlist[itemize]{%
+  label={\fontspec{Times New Roman}\textbullet}%
+}
+
+%%--------------------页眉页脚设置--------------------%%
+%% 调用示例:\myheadtext{奇数页页眉文本}{偶数页页眉文本}
+%% 初始化页眉文本变量
+\newcommand{\myheadertextodd}{} % 奇数页页眉文本
+\newcommand{\myheadertexteven}{} % 偶数页页眉文本
+
+%% 设置页眉页脚
+\pagestyle{fancy}
+\fancyhf{} % 清空默认页眉页脚
+\renewcommand{\headrulewidth}{0pt} % 去掉页眉横线
+
+%% 奇数页（右页）
+\fancyhead[RO]{%
+  \begin{tabular}{@{}r@{}}
+    {\bfseries\myheadertextodd} \\
+    /\space$\boldsymbol{\thepage}$
+  \end{tabular}
+}
+%% 偶数页（左页）
+\fancyhead[LE]{%
+  \begin{tabular}{@{}l@{}}
+    {\notoserifcjkscbolden\notoserifcjkscboldzh\myheadertexteven} \\
+    $\boldsymbol{\thepage}$\space/
+  \end{tabular}
+}
+
+%% 自定义设置页眉文本的命令
+\newcommand{\myheadertext}[2]{%
+    \renewcommand{\myheadertextodd}{#1}% 设置奇数页页眉文本
+    \renewcommand{\myheadertexteven}{#2}% 设置偶数页页眉文本
+}
+
+%%--------------------格式设置--------------------%%
+%% 自定义带副标题的标题命令
+%% 示例：\sectionwithsubtitle{标题名}{文 $\_$ 作者}{书签以及大纲中的标题名}
+\makeatletter
+\newcommand{\sectionwithsubtitle}[3]{%
+  \phantomsection % 增加锚点
+  \par\noindent % 显式取消缩进
+  \begingroup
+  \setlength{\parindent}{0pt} % 局部禁用缩进
+  \setlength{\fboxsep}{0pt}%
+  \setlength{\fboxrule}{0pt}%
+  
+  \sbox{\@tempboxa}{%
+    \begin{minipage}{\dimexpr\linewidth-2em\relax}
+      \setlength{\parindent}{0pt} % minipage内也禁用缩进
+      {\small #2}\par\vspace{1em}{\bfseries\Huge #1}%
+    \end{minipage}%
+  }%
+  
+  \begin{minipage}{\linewidth}
+    \makebox[0pt][l]{%
+      \hspace{0pt}%
+      \textcolor{gray}{\rule[-\dimexpr\ht\@tempboxa-5pt\relax]{2mm}{\dimexpr\ht\@tempboxa + \dp\@tempboxa\relax}} % 可能需要调整-5pt保持对齐
+    }%
+    \hspace{6mm}%
+    \usebox{\@tempboxa}%
+  \end{minipage}%
+  \par\vspace{5\baselineskip}
+  \endgroup
+  % 添加到目录
+  \addcontentsline{toc}{section}{\protect #3} 
+}
+\makeatother
+
+%% 定义章节起始页面主命令（自动判断奇偶页）
+%% 示例：\chapterstartpage{English Chapter Name}{在\\此\\的\\版\\块\\名}{在目录中显示的版块名}
+\newcommand{\chapterstartpage}[3]{%
+    \ifthenelse{\isodd{\value{page}}}%
+        {\chapterstartpageodd{#1}{#2}}% 奇数页
+        {\chapterstartpageeven{#1}{#2}}% 偶数页
+    % 加入到大纲中
+    \phantomsection
+    \addtocontents{toc}{\protect\cftpagenumbersoff{chapter}}% 关闭章节页码显示
+    \addcontentsline{toc}{chapter}{#3}%
+}
+%% 定义版块起始页面命令：偶数页（左页）
+\newcommand{\chapterstartpageeven}[2]{%
+    \begin{tikzpicture}[remember picture, overlay]
+        % 背景
+        \fill[gray!25] (current page.north west) rectangle (current page.south east);
+        
+        % 竖线（左）
+        \draw[black, line width=0.5pt] ([xshift=1in]current page.north west) -- ([xshift=1in]current page.south west);
+        
+        % 横线（上）
+        \draw[black, line width=0.5pt] ([yshift=-1in]current page.north west) -- ([yshift=-1in]current page.north east);   
+        
+        % 竖排英文（右）
+        \node[rotate=-90, anchor=center, align=left, 
+              font=\fontsize{45}{28}\selectfont\fzqkbysjren\color{black!35}] 
+            at ([xshift=1.5in]current page.west) {#1};
+        
+        % 竖排中文（左）
+        \node[rotate=0, anchor=north west, align=left, 
+              font=\fontsize{50}{42}\selectfont\fzqkbysjrzh] 
+            at ([xshift=2in,yshift=-1.5in]current page.north west) {#2};
+    \end{tikzpicture}
+}
+%% 定义版块起始页面命令：奇数页（右页）
+\newcommand{\chapterstartpageodd}[2]{%
+    \begin{tikzpicture}[remember picture, overlay]
+        % 背景
+        \fill[gray!25] (current page.north west) rectangle (current page.south east);
+        
+        % 竖线（右）
+        \draw[black, line width=0.5pt] ([xshift=-1in]current page.north east) -- ([xshift=-1in]current page.south east);
+        
+        % 横线（上）
+        \draw[black, line width=0.5pt] ([yshift=-1in]current page.north east) -- ([yshift=-1in]current page.north west);   
+        
+        % 竖排英文（左）
+        \node[rotate=-90, anchor=center, align=right, 
+              font=\fontsize{45}{28}\selectfont\fzqkbysjren\color{black!35}] 
+            at ([xshift=-1.5in]current page.east) {#1};
+        
+        % 竖排中文（右）
+        \node[rotate=0, anchor=north east, align=left, 
+              font=\fontsize{50}{42}\selectfont\fzqkbysjrzh] 
+            at ([xshift=-2in,yshift=-1.5in]current page.north east) {#2};
+    \end{tikzpicture}
+}
+
+%% 笑话版块背景命令（自动判断奇偶页）
+\newcommand{\mybackground}{%
+    \ifthenelse{\isodd{\value{page}}}%
+        {\AddToShipoutPictureBG*{\mybackgroundright}} % 奇数页
+        {\AddToShipoutPictureBG*{\mybackgroundleft}} % 偶数页
+}
+        
+\newcommand\mybackgroundright{%
+  \begin{tikzpicture}[remember picture, overlay]
+    % 背景图：从距左边缘开始填满右侧
+    \node[inner sep=0pt, anchor=south west]
+      at ([xshift=12mm]current page.south west)
+      {\includegraphics[
+         width=\dimexpr\paperwidth-12mm\relax,
+         height=\paperheight
+       ]{figure/tissuebackgroundright.jpg}};
+    % 竖线（与背景图左边界对齐）
+    \draw[gray, line width=2pt, dash pattern=on 10pt off 6pt]
+          ([xshift=12mm]current page.north west) -- ([xshift=12mm]current page.south west);
+    \node[
+      rotate=0,
+      anchor=north west,
+      align=left,
+      font=\small\selectfont
+    ] at ([xshift=12mm,yshift=-10mm]current page.north west){请\\沿\\此\\线\\裁\\下};
+  \end{tikzpicture}%
+}
+
+\newcommand\mybackgroundleft{%
+  \begin{tikzpicture}[remember picture, overlay]
+    % 背景图：从距右边缘 12 mm 开始填满左侧
+    \node[inner sep=0pt, anchor=south east]
+      at ([xshift=-12mm]current page.south east)
+      {\includegraphics[
+         width=\dimexpr\paperwidth-12mm\relax,
+         height=\paperheight
+       ]{figure/tissuebackgroundleft.jpg}};
+    % 竖线（与背景图右边界对齐）
+    \draw[gray, line width=2pt, dash pattern=on 10pt off 6pt]
+          ([xshift=-12mm]current page.north east) -- ([xshift=-12mm]current page.south east);
+    \node[
+      rotate=0,
+      anchor=north east,
+      align=left,
+      font=\small\selectfont
+    ] at ([xshift=-12mm,yshift=-10mm]current page.north east){请\\沿\\此\\线\\裁\\下};
+  \end{tikzpicture}%
+}
+
+
+% 定义 myquotation 环境
+\newenvironment{myquotation}{%
+    \list{}{%
+        \leftmargin=0em % 左缩进
+        \rightmargin=0em % 右缩进
+        \itemindent=2em
+        \listparindent=2em % 段落第二行起缩进
+        \topsep=0em
+        \parsep=0em
+        \partopsep=0em
+    }%
+    \item\relax
+    \kaishu % 中文楷体字体
+    \timesnewroman % 英文Times New Roman字体
+}{%
+    \endlist
+}
+
+
+% 设置标题样式
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{}{0em}{}
+
+
